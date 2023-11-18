@@ -1,0 +1,146 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMUke84ByUfIK5T9HwCJ1to",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/lul-prof/Optimus-prime/blob/main/An%20election%20based%20machine%20learning%20model\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "id": "PJ7GBW-nZSCB"
+      },
+      "outputs": [],
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "from sklearn.metrics import accuracy_score, classification_report, confusion_matrix\n",
+        "social_media_data = pd.read_csv('/content/socialmedia.csv')\n",
+        "voter_registration_data = pd.read_csv('/content/voter.csv')"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "merged_data = pd.merge(social_media_data, voter_registration_data, on='age', how='inner')\n",
+        "merged_data = merged_data.fillna(merged_data.mean())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "l3Q6lQcfZzAq",
+        "outputId": "2e3dcc3b-dc28-4e4e-e6d8-1ff0ed8cb075"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "<ipython-input-3-021459b48e8e>:2: FutureWarning: The default value of numeric_only in DataFrame.mean is deprecated. In a future version, it will default to False. In addition, specifying 'numeric_only=None' is deprecated. Select only valid columns or specify the value of numeric_only to silence this warning.\n",
+            "  merged_data = merged_data.fillna(merged_data.mean())\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "features = merged_data[['engagements','Suport for opposition','faith in rulling party(Via online polls)','followers','likes','age']]\n",
+        "target = merged_data['faith in rulling party(Via online polls)']"
+      ],
+      "metadata": {
+        "id": "TqQCQQ3Ya02N"
+      },
+      "execution_count": 7,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=1)\n",
+        "model = RandomForestClassifier(n_estimators=100, random_state=1)\n",
+        "model.fit(X_train, y_train)\n",
+        "predictions = model.predict(X_test)\n",
+        "accuracy = accuracy_score(y_test, predictions)\n",
+        "conf_matrix = confusion_matrix(y_test, predictions)\n",
+        "classification_rep = classification_report(y_test, predictions)\n",
+        "print(f'Accuracy: {accuracy}')\n",
+        "print(f'Confusion Matrix:\\n{conf_matrix}')\n",
+        "print(f'Classification Report:\\n{classification_rep}')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JcWn0VpQdMmr",
+        "outputId": "965058da-b4a0-4fa8-d4b4-359a0b7c3540"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Accuracy: 0.0\n",
+            "Confusion Matrix:\n",
+            "[[0 1]\n",
+            " [0 0]]\n",
+            "Classification Report:\n",
+            "              precision    recall  f1-score   support\n",
+            "\n",
+            "          80       0.00      0.00      0.00       1.0\n",
+            "          99       0.00      0.00      0.00       0.0\n",
+            "\n",
+            "    accuracy                           0.00       1.0\n",
+            "   macro avg       0.00      0.00      0.00       1.0\n",
+            "weighted avg       0.00      0.00      0.00       1.0\n",
+            "\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1344: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.\n",
+            "  _warn_prf(average, modifier, msg_start, len(result))\n",
+            "/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1344: UndefinedMetricWarning: Recall and F-score are ill-defined and being set to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.\n",
+            "  _warn_prf(average, modifier, msg_start, len(result))\n",
+            "/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1344: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.\n",
+            "  _warn_prf(average, modifier, msg_start, len(result))\n",
+            "/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1344: UndefinedMetricWarning: Recall and F-score are ill-defined and being set to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.\n",
+            "  _warn_prf(average, modifier, msg_start, len(result))\n",
+            "/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1344: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.\n",
+            "  _warn_prf(average, modifier, msg_start, len(result))\n",
+            "/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1344: UndefinedMetricWarning: Recall and F-score are ill-defined and being set to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.\n",
+            "  _warn_prf(average, modifier, msg_start, len(result))\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
